@@ -40,7 +40,7 @@ class DataWithDate(Data):
         """
 
         super().__init__(name, age)
-        self.time = datetime.utcnow()
+        self.time_end = datetime.utcnow()
 
 
 class Validator:

@@ -75,7 +75,8 @@ def main() -> None:
     # Счетчик попыток ввода данных
     error_count = 0
 
-    validata = Validator()
+    # Определение объекта validate_data класса Validator
+    validate_data = Validator()
     time_start = datetime.utcnow()
 
     while True:
@@ -85,12 +86,13 @@ def main() -> None:
         name = input("Enter your name: ")
         age = input("Enter your age: ")
 
+        # Определение объекта data c передачей name и age класса DataWithDate
         data = DataWithDate(name, age)
 
         # Обработка исключение на некорректное имя или возраст
 
         try:
-            validata.validate(data)
+            validate_data.validate(data)
         except ValidationError as e:
             print(f"Error. Data entered incorrectly. Check out the text error: {e}\n")
             error_count += 1
@@ -104,7 +106,7 @@ def main() -> None:
         text_welcome += advice
 
     print(f"\nYou trying enter a data: {error_count + 1} times. Time of the first attempt -{time_start}."
-          f" Time of the last attempt - {data.time}\n")
+          f" Time of the last attempt - {data.time_end}\n")
     print(text_welcome)
     guess_number_game()
 
