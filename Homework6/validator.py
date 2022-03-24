@@ -90,3 +90,6 @@ class Validator:
             raise ValidationError("You age is 0 or negative.")
         elif self.data_history[-1].age < 14:
             raise ValidationError("Minimum age is 14.")
+    
+    def test(self):
+        print(self.data_history)
