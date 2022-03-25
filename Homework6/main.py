@@ -1,3 +1,5 @@
+# Kerzeenok
+
 from validator import Validator
 from validator import DataWithDate
 from exceptions import ValidationError
@@ -80,24 +82,38 @@ def main() -> None:
     time_start = datetime.utcnow()
 
     while True:
+
         if error_count > 0:
             print(f"You are trying to enter data {error_count+1} times.\n")
 
         name = input("Enter your name: ")
         age = input("Enter your age: ")
 
+        # Обработка исключение на недопустимое значение
         # Определение объекта data c передачей name и age класса DataWithDate
-        data = DataWithDate(name, age)
+
+
+        try:
+            data = DataWithDate(name, age)
+        except ValueError as e:
+            error_count += 1
+            print(f"Error. Data entered incorrectly: {e}\n")
+            continue
+
+        # TODO Один из вариантов
+        # if not validate_data.data_history:
+        #     print("You not enter data.")
 
         # Обработка исключение на некорректное имя или возраст
 
         try:
             validate_data.validate(data)
         except ValidationError as e:
-            print(f"Error. Data entered incorrectly. Check out the text error: {e}\n")
             error_count += 1
-        else:
-            break
+            print(f"Error. Data entered incorrectly. Check out the text error: {e}\n")
+            continue
+
+        break
 
     advice = get_passport_advice(data.age)
     text_welcome = f"Hello {name .title()}! You age is {age}."
@@ -105,11 +121,12 @@ def main() -> None:
     if advice:
         text_welcome += advice
 
-    print(f"\nYou trying enter a data: {error_count + 1} times. Time of the first attempt -{time_start}."
-          f" Time of the last attempt - {data.time_end}\n")
+    print(f"\nYou trying enter a data: {error_count + 1} times. "
+          f"Time of the first attempt -{time_start.strftime('%H:%M:%S')}."
+          f" Time of the last attempt - {data.time_end.strftime('%H:%M:%S')}\n")
     print(text_welcome)
-    guess_number_game()
 
+    guess_number_game()
 
 
 if __name__ == '__main__':

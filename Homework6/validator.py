@@ -71,6 +71,10 @@ class Validator:
         и минимальное количество символов в имени - 3.
         """
 
+        # Один из вариантов
+        if not self.data_history:
+            raise ValueError("the object is not passed, do not touch class")
+
         if not self.data_history[-1].name:
             raise ValidationError("You not enter your name.")
         elif self.data_history[-1].name.count(" ") > 1:
@@ -85,6 +89,10 @@ class Validator:
         Проверяет, что возраст не ноль или отрицательный,
         проверяет, что минимальный возраст - 14.
         """
+
+        # Один из вариантов
+        if not self.data_history:
+            raise ValueError("the object is not passed, do not touch class")
 
         if self.data_history[-1].age < 1:
             raise ValidationError("You age is 0 or negative.")
