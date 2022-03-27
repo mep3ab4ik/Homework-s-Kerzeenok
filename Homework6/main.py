@@ -102,10 +102,10 @@ def main() -> None:
             print(f"Error. Data entered incorrectly: {e}\n")
             continue
 
-        # Если не правильно, то другой вариант в validator
+        # Другой
 
-        if not validate_data.data_history:
-            print("The object is not passed, do not touch class.")
+        # if not validate_data.data_history:
+        #     print("The object is not passed, do not touch class.")
 
         # Обработка исключение на некорректное имя или возраст
 
