@@ -1,4 +1,4 @@
-# Kerzeenok
+__author__ = "Керзеёнок Никита"
 
 
 class ValidationError(Exception):

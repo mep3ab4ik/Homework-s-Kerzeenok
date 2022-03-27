@@ -1,4 +1,4 @@
-# Kerzeenok
+__author__ = "Керзеёнок Никита"
 
 from exceptions import ValidationError
 from datetime import datetime
@@ -7,9 +7,10 @@ from datetime import datetime
 class Data:
     """Класс хранящий данные о пользователе"""
 
+
     def __init__(self, name: str, age: str):
         """Волшебный Метод, который записывает имя и возраст в переменные с помощью конструктора класса
-        и очищает от пробелов, пересохранив в одноименные перченные.
+        и очищает от пробелов с помощью метода, пересохранив в одноименные перченные.
         """
 
         self.name = name
@@ -20,7 +21,7 @@ class Data:
         self.age = int(self.age)
 
 
-    def _clear_whitespaces(self):
+    def _clear_whitespaces(self) -> None:
         """Метод, который удаляет пробелы в начале и конце строки"""
 
         self.name = self.name.strip()
@@ -36,7 +37,7 @@ class DataWithDate(Data):
 
     def __init__(self, name: str, age: str):
         """Волшебный метод, в котором наследуется имя и возраст от родительского класса.
-        Также храниться переменная временим создания, когда обращались к классу.
+        Также переменная хранит время, когда обращались к классу.
         """
 
         super().__init__(name, age)
@@ -52,7 +53,7 @@ class Validator:
         self.data_history: list[Data] = []
 
 
-    def validate(self, data: Data):
+    def validate(self, data: Data) -> None:
         """Метод, который передает имя и возраст из класса Data
 
         Записываем данные в переменные и добавляем их в список
@@ -64,16 +65,16 @@ class Validator:
         self._validate_age()
 
 
-    def _validate_name(self):
+    def _validate_name(self) -> None:
         """Это метод проверки имени на определенные условия
 
         Проверка имени на пустоту, содержит ли имя больше одного пробела
         и минимальное количество символов в имени - 3.
         """
 
-        # Один из вариантов
-        if not self.data_history:
-            raise ValueError("the object is not passed, do not touch class")
+        # TODO Вариант, если не правильно в main
+        # if not self.data_history:
+        #     raise ValueError("The object is not passed, do not touch class.")
 
         if not self.data_history[-1].name:
             raise ValidationError("You not enter your name.")
@@ -83,16 +84,16 @@ class Validator:
             raise ValidationError("Your name is short, the minimum number of letters in the name is 3. ")
 
 
-    def _validate_age(self,):
+    def _validate_age(self) -> None:
         """Это метод проверки возраста
 
         Проверяет, что возраст не ноль или отрицательный,
         проверяет, что минимальный возраст - 14.
         """
 
-        # Один из вариантов
-        if not self.data_history:
-            raise ValueError("the object is not passed, do not touch class")
+        # TODO Вариант, если не правильно в main
+        # if not self.data_history:
+        #     raise ValueError("The object is not passed, do not touch class.")
 
         if self.data_history[-1].age < 1:
             raise ValidationError("You age is 0 or negative.")

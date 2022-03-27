@@ -1,9 +1,8 @@
-# Kerzeenok
+__author__ = "Керзеёнок Никита"
 
 from validator import Validator
 from validator import DataWithDate
 from exceptions import ValidationError
-
 from random import randint
 from datetime import datetime
 
@@ -78,7 +77,11 @@ def main() -> None:
     error_count = 0
 
     # Определение объекта validate_data класса Validator
+
     validate_data = Validator()
+
+    # Время запуска
+
     time_start = datetime.utcnow()
 
     while True:
@@ -92,7 +95,6 @@ def main() -> None:
         # Обработка исключение на недопустимое значение
         # Определение объекта data c передачей name и age класса DataWithDate
 
-
         try:
             data = DataWithDate(name, age)
         except ValueError as e:
@@ -100,9 +102,10 @@ def main() -> None:
             print(f"Error. Data entered incorrectly: {e}\n")
             continue
 
-        # TODO Один из вариантов
-        # if not validate_data.data_history:
-        #     print("You not enter data.")
+        # Если не правильно, то другой вариант в validator
+
+        if not validate_data.data_history:
+            print("The object is not passed, do not touch class.")
 
         # Обработка исключение на некорректное имя или возраст
 
@@ -122,8 +125,9 @@ def main() -> None:
         text_welcome += advice
 
     print(f"\nYou trying enter a data: {error_count + 1} times. "
-          f"Time of the first attempt -{time_start.strftime('%H:%M:%S')}."
-          f" Time of the last attempt - {data.time_end.strftime('%H:%M:%S')}\n")
+          f"Time of the first attempt - {time_start.strftime('%H:%M:%S')}. "
+          f"Time of the last attempt - {data.time_end.strftime('%H:%M:%S')}\n")
+
     print(text_welcome)
 
     guess_number_game()
