@@ -102,7 +102,7 @@ def main() -> None:
             print(f"Error. Data entered incorrectly: {e}\n")
             continue
 
-        # Другой
+        # Возможно не правильно
 
         # if not validate_data.data_history:
         #     print("The object is not passed, do not touch class.")
