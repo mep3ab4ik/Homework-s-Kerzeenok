@@ -102,11 +102,6 @@ def main() -> None:
             print(f"Error. Data entered incorrectly: {e}\n")
             continue
 
-        # Возможно не правильно
-
-        # if not validate_data.data_history:
-        #     print("The object is not passed, do not touch class.")
-
         # Обработка исключение на некорректное имя или возраст
 
         try:
@@ -126,8 +121,8 @@ def main() -> None:
 
     print(f"\nYou trying enter a data: {error_count + 1} times. "
           f"Time of the first attempt - {time_start.strftime('%H:%M:%S')}. "
-          f"Time of the last attempt - {data.time_end.strftime('%H:%M:%S')}\n")
-
+          f"Time of the last attempt - {data.time_end.strftime('%H:%M:%S')}. "
+          f"Time spent: {data.time_end - time_start}\n")
     print(text_welcome)
 
     guess_number_game()
