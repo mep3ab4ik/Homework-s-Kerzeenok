@@ -3,6 +3,7 @@ __author__ = "Керзеёнок Никита"
 from random import randint
 from datetime import datetime
 from authenticator import Authenticator
+from exceptions import AuthorizationError, RegistrationError
 
 
 # def guess_number_game() -> None:
@@ -46,11 +47,40 @@ from authenticator import Authenticator
 
 
 def main() -> None:
-    login = input("Введите логин: ")
-    password = input("Введите пароль:")
+
+
     account = Authenticator()
 
     if account.login:
+        print("Для авторизации введите логин и пароль. \n")
+    else:
+        print("Для регистрации введите логин и пароль\n")
+
+    while True:
+        login = input("Введите логин: ")
+        password = input("Введите пароль:")
+
+        if account.login:
+
+            try:
+                account.authorize(login, password)
+            except AuthorizationError as e:
+                print(f"Error. {e}")
+                continue
+            else:
+                print(f"Hello {account.login}! время последней успешной авторизации: {account.last_success_login_at}. "
+                      f"Попыток авторизации: {account.errors_count}")
+
+        if not account.login:
+
+            try:
+                account.registrate(login, password)
+            except RegistrationError as e:
+                print(f"Error. {e}")
+                continue
+            else:
+                print("Вы успешно зарегались")
+                break
 
 
     # guess_number_game()

@@ -1,7 +1,6 @@
 import os.path
 from datetime import datetime
-from exceptions import AuthorizationError
-from exceptions import RegistrationError
+from exceptions import AuthorizationError, RegistrationError
 
 
 class Authenticator:
@@ -50,12 +49,16 @@ class Authenticator:
         if not self.login:
             raise AuthorizationError("Вы не зарегистрировались.")
 
-        if login == self.login and password == self._password:
-            print("Вы вошли в аккаунт")
+        if login:
+            if login == self.login and password == self._password:
+                self.last_success_login_at = datetime.utcnow().isoformat()
+                self._update_auth_file()
+            else:
+                self.errors_count += 1
+                self._update_auth_file()
+                raise AuthorizationError("Логин или пароль неверные")
         else:
-            self.errors_count += 1
-            self._update_auth_file()
-            raise AuthorizationError("Данные не верные")
+            raise AuthorizationError("Логин не может быть пустым")
 
 
     def _update_auth_file(self):
@@ -80,10 +83,12 @@ class Authenticator:
         """
         if self.login:
             raise RegistrationError("Вы уже зарегистрированный пользователь.")
-        else:
+
+        if login:
             with open('auth.txt', 'w+') as f:
                 f.write(f"{login}\n")
                 f.write(f"{password}\n")
                 f.write(f"{datetime.utcnow().isoformat()}\n")
                 f.write(f"{self.errors_count}\n")
-
+        else:
+            raise RegistrationError("Поля логин не может быть пустым.")
