@@ -4,6 +4,7 @@ from exceptions import AuthorizationError, RegistrationError
 
 
 class Authenticator:
+    """Класс аутентификации пользователя."""
 
     def __init__(self):
 
@@ -30,8 +31,9 @@ class Authenticator:
     def _read_auth_file(self):
         """Метод считывания данных.
 
-        Метод считывает данные из файла и записывает их в переменные.
+        Метод считывает данные из файла и перезаписываем их в переменные.
         """
+
         with open('auth.txt') as f:
             self.login = f.readline().strip()
             self._password = f.readline().strip()
@@ -47,18 +49,17 @@ class Authenticator:
         """
 
         if not self.login:
-            raise AuthorizationError("Вы не зарегистрировались.")
+            raise AuthorizationError("You haven't registered.")
 
         if login:
             if login == self.login and password == self._password:
-                self.last_success_login_at = datetime.utcnow().isoformat()
                 self._update_auth_file()
             else:
                 self.errors_count += 1
                 self._update_auth_file()
-                raise AuthorizationError("Логин или пароль неверные")
+                raise AuthorizationError("The username or password is incorrect")
         else:
-            raise AuthorizationError("Логин не может быть пустым")
+            raise AuthorizationError("The login field cannot be empty.")
 
 
     def _update_auth_file(self):
@@ -70,6 +71,7 @@ class Authenticator:
         with open('auth.txt', 'w') as f:
             f.write(f"{self.login}\n")
             f.write(f"{self._password}\n")
+            self.last_success_login_at = datetime.utcnow().isoformat()
             f.write(f"{self.last_success_login_at}\n")
             f.write(f"{self.errors_count}")
 
@@ -82,13 +84,12 @@ class Authenticator:
 
         """
         if self.login:
-            raise RegistrationError("Вы уже зарегистрированный пользователь.")
+            raise RegistrationError("You are already a registered user.")
 
         if login:
-            with open('auth.txt', 'w+') as f:
-                f.write(f"{login}\n")
-                f.write(f"{password}\n")
-                f.write(f"{datetime.utcnow().isoformat()}\n")
-                f.write(f"{self.errors_count}\n")
+            self.login = login
+            self._password = password
+            self._update_auth_file()
         else:
-            raise RegistrationError("Поля логин не может быть пустым.")
+            self.errors_count += 1
+            raise RegistrationError("The login field cannot be empty.")
