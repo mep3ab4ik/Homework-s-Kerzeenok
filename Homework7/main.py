@@ -90,7 +90,7 @@ def main() -> None:
             except RegistrationError as e:
                 print(f"Error. {e}")
                 continue
-                
+
             print("You have successfully registered")
             break
 
