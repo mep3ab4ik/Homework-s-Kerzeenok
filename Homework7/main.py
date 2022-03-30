@@ -74,14 +74,14 @@ def main() -> None:
             except AuthorizationError as e:
                 print(f"Error. {e}")
                 continue
-            else:
-                print(f"Hello {account.login}! "
-                      f"Time of the last successful authorization: "
-                      f"{datetime.fromisoformat(account.last_success_login_at).strftime('%d.%m.%Y %H:%M:%S')}. "
-                      f"Quantity of authorization attempts: {account.errors_count}")
 
-                guess_number_game()
-                break
+            print(f"Hello {account.login}! "
+                  f"Time of the last successful authorization: "
+                  f"{datetime.fromisoformat(account.last_success_login_at).strftime('%d.%m.%Y %H:%M:%S')}. "
+                  f"Quantity of authorization attempts: {account.errors_count}")
+
+            guess_number_game()
+            break
 
         if not account.login:
 
@@ -90,9 +90,9 @@ def main() -> None:
             except RegistrationError as e:
                 print(f"Error. {e}")
                 continue
-            else:
-                print("You have successfully registered")
-                break
+                
+            print("You have successfully registered")
+            break
 
 
 if __name__ == '__main__':
