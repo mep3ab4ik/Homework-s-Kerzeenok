@@ -119,10 +119,12 @@ def main() -> None:
     if advice:
         text_welcome += advice
 
+    time_spent = datetime.strptime(str(data.time_end - time_start), "%H:%M:%S.%f").strftime("%H:%M:%S")
+
     print(f"\nYou trying enter a data: {error_count + 1} times. "
           f"Time of the first attempt - {time_start.strftime('%H:%M:%S')}. "
           f"Time of the last attempt - {data.time_end.strftime('%H:%M:%S')}. "
-          f"Time spent: {data.time_end - time_start}\n")
+          f"Time spent: {time_spent}\n")
     print(text_welcome)
 
     guess_number_game()

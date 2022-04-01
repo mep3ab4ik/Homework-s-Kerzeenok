@@ -53,6 +53,7 @@ class Authenticator:
 
         if login:
             if login == self.login and password == self._password:
+                self.last_success_login_at = datetime.utcnow().isoformat()
                 self._update_auth_file()
             else:
                 self.errors_count += 1
@@ -71,7 +72,6 @@ class Authenticator:
         with open('auth.txt', 'w') as f:
             f.write(f"{self.login}\n")
             f.write(f"{self._password}\n")
-            self.last_success_login_at = datetime.utcnow().isoformat()
             f.write(f"{self.last_success_login_at}\n")
             f.write(f"{self.errors_count}")
 
@@ -84,6 +84,7 @@ class Authenticator:
 
         """
         if self.login:
+            self.errors_count += 1
             raise RegistrationError("You are already a registered user.")
 
         if login:
@@ -92,4 +93,5 @@ class Authenticator:
             self._update_auth_file()
         else:
             self.errors_count += 1
+            self._update_auth_file()
             raise RegistrationError("The login field cannot be empty.")

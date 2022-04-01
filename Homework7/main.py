@@ -51,7 +51,7 @@ def main() -> None:
 
     Выводим подсказу пользователю, что ему нужно сделать в бесконечном цикле запрашиваем логин и пароль.
     Если существует аккаунт, то пытаемся авторизоваться и когда авторизуемся играем в игру, затем прерываем цикл
-    Если не существует аккаунт, то регистрируем его и заканчиваем цикк.
+    Если не существует аккаунт, то регистрируем его и заканчиваем цикл.
     """
 
     account = Authenticator()
@@ -75,9 +75,10 @@ def main() -> None:
                 print(f"Error. {e}")
                 continue
 
+            success_login_time = datetime.fromisoformat(account.last_success_login_at).strftime('%d.%m.%Y %H:%M:%S')
+
             print(f"Hello {account.login}! "
-                  f"Time of the last successful authorization: "
-                  f"{datetime.fromisoformat(account.last_success_login_at).strftime('%d.%m.%Y %H:%M:%S')}. "
+                  f"Time of the last successful authorization: {success_login_time}. "
                   f"Quantity of authorization attempts: {account.errors_count}")
 
             guess_number_game()

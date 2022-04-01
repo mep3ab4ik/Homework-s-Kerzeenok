@@ -77,11 +77,13 @@ class Validator:
         if not self.data_history:
             raise ValueError("The object is not passed, do not touch class.")
 
-        if not self.data_history[-1].name:
+        name = self.data_history[-1].name
+
+        if not name:
             raise ValidationError("You not enter your name.")
-        elif self.data_history[-1].name.count(" ") > 1:
+        elif name.count(" ") > 1:
             raise ValidationError("Your name contains more than 1 space. ")
-        elif len(self.data_history[-1].name) < 3:
+        elif len(name) < 3:
             raise ValidationError("Your name is short, the minimum number of letters in the name is 3. ")
 
 
@@ -97,7 +99,9 @@ class Validator:
         if not self.data_history:
             raise ValueError("The object is not passed, do not touch class.")
 
-        if self.data_history[-1].age < 1:
+        age = self.data_history[-1].age
+
+        if age < 1:
             raise ValidationError("You age is 0 or negative.")
-        elif self.data_history[-1].age < 14:
+        elif age < 14:
             raise ValidationError("Minimum age is 14.")
