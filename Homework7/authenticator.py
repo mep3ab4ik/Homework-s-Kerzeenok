@@ -37,7 +37,7 @@ class Authenticator:
         with open('auth.txt') as f:
             self.login = f.readline().strip()
             self._password = f.readline().strip()
-            self.last_success_login_at = f.readline().strip()
+            self.last_success_login_at = datetime.fromisoformat(f.readline().strip())
             self.errors_count = int(f.readline().strip())
 
 
@@ -49,18 +49,21 @@ class Authenticator:
         """
 
         if not self.login:
+            self.errors_count += 1
             raise AuthorizationError("You haven't registered.")
 
-        if login:
-            if login == self.login and password == self._password:
-                self.last_success_login_at = datetime.utcnow().isoformat()
-                self._update_auth_file()
-            else:
-                self.errors_count += 1
-                self._update_auth_file()
-                raise AuthorizationError("The username or password is incorrect")
-        else:
+        if not login:
+            self.errors_count += 1
             raise AuthorizationError("The login field cannot be empty.")
+
+        if login == self.login and password == self._password:
+            self.last_success_login_at = datetime.utcnow().isoformat()
+            self._update_auth_file()
+        else:
+            self.errors_count += 1
+            self._update_auth_file()
+            raise AuthorizationError("The username or password is incorrect")
+
 
 
     def _update_auth_file(self):
@@ -87,11 +90,12 @@ class Authenticator:
             self.errors_count += 1
             raise RegistrationError("You are already a registered user.")
 
-        if login:
-            self.login = login
-            self._password = password
-            self._update_auth_file()
-        else:
+        if not login:
             self.errors_count += 1
-            self._update_auth_file()
             raise RegistrationError("The login field cannot be empty.")
+
+        self.login = login
+        self._password = password
+        self._update_auth_file()
+
+
