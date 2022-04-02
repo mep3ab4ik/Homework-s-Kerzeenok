@@ -72,7 +72,7 @@ class Authenticator:
         В файле обновляется время и количество ошибок.
         """
 
-        with open('auth.txt', 'w') as f:
+        with open("auth.txt", "w") as f:
             f.write(f"{self.login}\n")
             f.write(f"{self._password}\n")
             f.write(f"{self.last_success_login_at}\n")
@@ -96,6 +96,7 @@ class Authenticator:
 
         self.login = login
         self._password = password
+        self.last_success_login_at = datetime.utcnow().isoformat()
         self._update_auth_file()
 
 
