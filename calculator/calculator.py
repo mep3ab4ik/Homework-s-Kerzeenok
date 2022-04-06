@@ -24,12 +24,14 @@ C
 отдельный метод. Итого должно быть 5 методов класса калькулятора, включая конструктор.
 
 """
+from error import WrongInput
+from decimal import Decimal
 
 class Calculator:
 
     def __init__(self):
 
-        self.last_memory: int = 0
+        self.last_memory: int | Decimal = 0
 
 
     def plus(self, first, second) -> int:
@@ -54,7 +56,8 @@ class Calculator:
 
     def divide(self, first, second) -> int:
         """Метод деление чисел"""
-
+        if second == 0:
+            raise WrongInput("Делить на '0' нельзя")
         self.last_memory = first / second
         return self.last_memory
 

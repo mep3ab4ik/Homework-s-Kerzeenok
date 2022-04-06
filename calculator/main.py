@@ -1,4 +1,4 @@
-"""Давай калькулятор делать со звездочкой)
+"""Давай калькулятор делать со звездочкой
 
 Калькулятор хранит значение последнего выражения. По умолчанию — 0.
 
@@ -23,9 +23,12 @@ C
 Реализовать это в классе. Каждый оператор калькулятора —
 отдельный метод. Итого должно быть 5 методов класса калькулятора, включая конструктор."""
 
+from error import WrongInput, UnknownOperator
 from calculator import Calculator
 from decimal import Decimal
+
 def main():
+
     """"""
     # Переменная со всеми операторами
 
@@ -36,12 +39,9 @@ def main():
     start = Calculator()
 
     while True:
-        # Индекс для чисел
-        index = 0
-
         data = input("Введите выражение: ").lower()
 
-        #Стоп программы
+        # Стоп программы
 
         if data == "stop":
             exit()
@@ -53,38 +53,49 @@ def main():
             start.last_memory = 0
             continue
 
-        data = data.split(" ")
-        print(data)
+        data = data.strip().split(" ")
+
         # TODO ПЕРЕПИСАТЬ СУКА НАДО БЛЯТЬ
         if len(data) == 2:
             number_1 = start.last_memory
-            operator = data[0]
+            number_2 = data[-1]
+            operator = data[-2]
         elif len(data) == 3:
             number_1 = data[0]
-            operator = data[1]
+            number_2 = data[-1]
+            operator = data[-2]
 
-        # print(number_1)
-        # print(number_2)
-        # print(operator)
+        # try:
+        #     if number_1
+
+        try:
+            if operator not in operators:
+                raise UnknownOperator("Неизвестный оператор, попробуйте снова!")
+        except UnknownOperator as e:
+            print(f"Ошибка: {e}\n")
+            continue
 
         # TODO Конвертируем в формат Decimal
         number_1 = Decimal(number_1)
         number_2 = Decimal(number_2)
 
         if operator == "+":
-            start.plus(number_1, data[-1])
+            start.plus(number_1, number_2)
 
         if operator == "-":
-            start.minus(number_1, data[-1])
+            start.minus(number_1, number_2)
 
         if operator == "*":
-            start.multiply(number_1, data[-1])
+            start.multiply(number_1, number_2)
 
-        if operator == "/":
-            start.divide(number_1, data[-1])
+        try:
+            if operator == "/":
+                start.divide(number_1, number_2)
+        except WrongInput as e:
+            print(f"Ошибка: {e}\n")
+            continue
 
         print("Получилось значение:", start.last_memory)
-
 
 
 if __name__ == '__main__':
