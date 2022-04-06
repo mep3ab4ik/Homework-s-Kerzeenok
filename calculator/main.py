@@ -53,47 +53,35 @@ def main():
             start.last_memory = 0
             continue
 
-        # Поиск оператора
-        # for i in data:
-        #     if i in operators:
-
-
-
-
-
-        # Поиск и запись числа, оператора в переменные
-        for i in data:
-            if i in operators:
-                number_1 = data[:index].strip()
-                number_2 = data[index+1:].strip()
-                operator = i
-            index += 1
+        data = data.split(" ")
+        print(data)
+        # TODO ПЕРЕПИСАТЬ СУКА НАДО БЛЯТЬ
+        if len(data) == 2:
+            number_1 = start.last_memory
+            operator = data[0]
+        elif len(data) == 3:
+            number_1 = data[0]
+            operator = data[1]
 
         # print(number_1)
         # print(number_2)
         # print(operator)
 
-
-        # Проверка на полное выражение или '+ number'
-
-        if not number_1:
-            number_1 = start.last_memory
-
-        # TODO Конвертируем в формат int
+        # TODO Конвертируем в формат Decimal
         number_1 = Decimal(number_1)
         number_2 = Decimal(number_2)
 
         if operator == "+":
-            start.plus(number_2, number_1)
+            start.plus(number_1, data[-1])
 
         if operator == "-":
-            start.minus(number_2, number_1)
+            start.minus(number_1, data[-1])
 
         if operator == "*":
-            start.multiply(number_2, number_1)
+            start.multiply(number_1, data[-1])
 
         if operator == "/":
-            start.divide(number_2, number_1)
+            start.divide(number_1, data[-1])
 
         print("Получилось значение:", start.last_memory)
 
