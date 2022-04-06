@@ -56,8 +56,10 @@ class Calculator:
 
     def divide(self, first, second) -> int:
         """Метод деление чисел"""
+
         if second == 0:
             raise WrongInput("Делить на '0' нельзя")
+
         self.last_memory = first / second
         return self.last_memory
 
