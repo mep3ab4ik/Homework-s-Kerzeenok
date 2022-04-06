@@ -27,6 +27,7 @@ C
 from error import WrongInput
 from decimal import Decimal
 
+
 class Calculator:
 
     def __init__(self):
@@ -36,32 +37,30 @@ class Calculator:
         self.last_memory: int | Decimal = 0
 
 
-    def plus(self, first, second) -> int:
+    def plus(self, first, second):
         """Метод сложение чисел"""
 
         self.last_memory = first + second
-        return self.last_memory
 
 
-    def minus(self, first, second) -> int:
+    def minus(self, first, second):
         """Метод вычитания чисел"""
 
         self.last_memory = first - second
-        return self.last_memory
 
 
-    def multiply(self, first, second) -> int:
+    def multiply(self, first, second):
         """Метод умножение чисел"""
 
         self.last_memory = first * second
-        return self.last_memory
 
-    def divide(self, first, second) -> int:
+
+    def divide(self, first, second):
         """Метод деление чисел"""
 
         if second == 0:
             raise WrongInput("Делить на '0' нельзя")
 
         self.last_memory = first / second
-        return self.last_memory
+
 

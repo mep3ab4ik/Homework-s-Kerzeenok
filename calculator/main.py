@@ -80,7 +80,7 @@ def check_data(data: list) -> None:
     print("Полученное значение:", calc.last_memory)
 
 
-def main():
+def main() -> None:
     """Основная функция.
 
     Вводим данных, очищаем от пробелов и разбиваем данных на ячейки в список.
