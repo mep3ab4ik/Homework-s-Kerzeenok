@@ -31,6 +31,8 @@ class Calculator:
 
     def __init__(self):
 
+        # Буфер последнего значения
+
         self.last_memory: int | Decimal = 0
 
 

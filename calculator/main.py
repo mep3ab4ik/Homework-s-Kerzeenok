@@ -27,38 +27,41 @@ from error import WrongInput, UnknownOperator
 from calculator import Calculator
 from decimal import Decimal, InvalidOperation
 
-start = Calculator()
+calc = Calculator()
 
 
-def computation(number_1, operator, number_2):
-    """Функция для обработки знаков вычисление"""
+def computation(number_1: Decimal, operator: str, number_2: Decimal) -> Decimal:
+    """Функция для вычисления по знаку"""
 
     if operator == "+":
-        start.plus(number_1, number_2)
+        calc.plus(number_1, number_2)
     elif operator == "-":
-        start.minus(number_1, number_2)
+        calc.minus(number_1, number_2)
     elif operator == "*":
-        start.multiply(number_1, number_2)
+        calc.multiply(number_1, number_2)
     elif operator == "/":
-        start.divide(number_1, number_2)
+        calc.divide(number_1, number_2)
     else:
         raise UnknownOperator("Неизвестный оператор, попробуйте снова!")
 
-    return start.last_memory
+    return calc.last_memory
 
 
-def check_data(data):
+def check_data(data: list) -> None:
+    """Функция очистки буфера, записи данных в переменные,
+    Записи в буфер последнего значения.
+    """
 
     # Проверка на очистку памяти
 
     if data[0] in ["ce", "c"]:
         print("Очистили память\n")
-        start.last_memory = 0
+        calc.last_memory = 0
         return
 
-    # TODO можно проще
+    # TODO Возможно есть проще варианты
     if len(data) == 2:
-        number_1 = start.last_memory
+        number_1 = calc.last_memory
         number_2 = data[-1]
         operator = data[-2]
     elif len(data) == 3:
@@ -68,15 +71,22 @@ def check_data(data):
     else:
         raise WrongInput("Ошибка ввода данных")
 
-    # Конвертации в данных
+    # Конвертации данных в Decimal
     number_1 = Decimal(number_1)
     number_2 = Decimal(number_2)
 
-    start.last_memory = computation(number_1, operator, number_2)
-    print("Полученное значение:", start.last_memory)
+    # Запись в буфер последнего значения
+    calc.last_memory = computation(number_1, operator, number_2)
+    print("Полученное значение:", calc.last_memory)
 
 
 def main():
+    """Основная функция.
+
+    Вводим данных, очищаем от пробелов и разбиваем данных на ячейки в список.
+    Затем обрабатываем ошибки.
+    """
+
     while True:
         data = input("Введите выражение: ").lower()
         data = data.strip().split(" ")
@@ -89,7 +99,6 @@ def main():
             print(f"Ошибка: {e}\n")
         except InvalidOperation:
             print("Ошибка при конвертации данных в Decimal\n")
-
 
 
 if __name__ == '__main__':
