@@ -25,34 +25,36 @@ C
 
 from error import WrongInput, UnknownOperator
 from calculator import Calculator
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
+
+start = Calculator()
 
 
 def computation(number_1, operator, number_2):
     """Функция для обработки знаков вычисление"""
 
-    star = Calculator()
-
-    if operator == "=":
-        star.plus(number_1, number_2)
+    if operator == "+":
+        start.plus(number_1, number_2)
     elif operator == "-":
-        star.minus(number_1, number_2)
+        start.minus(number_1, number_2)
     elif operator == "*":
-        star.multiply(number_1, number_2)
+        start.multiply(number_1, number_2)
     elif operator == "/":
-        star.divide(number_1, number_2)
+        start.divide(number_1, number_2)
     else:
         raise UnknownOperator("Неизвестный оператор, попробуйте снова!")
 
+    return start.last_memory
+
 
 def check_data(data):
-    start = Calculator()
 
     # Проверка на очистку памяти
 
     if data[0] in ["ce", "c"]:
-        print("Очистили память")
+        print("Очистили память\n")
         start.last_memory = 0
+        return
 
     # TODO можно проще
     if len(data) == 2:
@@ -63,24 +65,31 @@ def check_data(data):
         number_1 = data[0]
         number_2 = data[-1]
         operator = data[-2]
+    else:
+        raise WrongInput("Ошибка ввода данных")
 
-    # TODO Конвертируем в формат Decimal
+    # Конвертации в данных
     number_1 = Decimal(number_1)
     number_2 = Decimal(number_2)
 
-    computation(number_1, operator, number_2)
+    start.last_memory = computation(number_1, operator, number_2)
+    print("Полученное значение:", start.last_memory)
 
 
 def main():
     while True:
         data = input("Введите выражение: ").lower()
-
         data = data.strip().split(" ")
 
         try:
             check_data(data)
         except UnknownOperator as e:
-            print(f"Ошибка: {e}")
+            print(f"Ошибка: {e}\n")
+        except WrongInput as e:
+            print(f"Ошибка: {e}\n")
+        except InvalidOperation:
+            print("Ошибка при конвертации данных в Decimal\n")
+
 
 
 if __name__ == '__main__':
