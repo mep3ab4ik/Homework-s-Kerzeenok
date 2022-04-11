@@ -75,7 +75,7 @@ def main() -> None:
                 print(f"Error. {e}")
                 continue
 
-            success_login_time = datetime.fromisoformat(account.last_success_login_at).strftime('%d.%m.%Y %H:%M:%S')
+            success_login_time = account.last_success_login_at.strftime('%d.%m.%Y %H:%M:%S')
 
             print(f"Hello {account.login}! "
                   f"Time of the last successful authorization: {success_login_time}. "
