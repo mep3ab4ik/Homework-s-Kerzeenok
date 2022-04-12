@@ -1,3 +1,5 @@
+__author__ = "Керзеёнок Никита"
+
 import os.path
 from datetime import datetime
 from exceptions import AuthorizationError, RegistrationError
@@ -18,8 +20,8 @@ class Authenticator:
         if self._is_auth_file_exist():
             self._read_auth_file()
 
-
-    def _is_auth_file_exist(self) -> bool:
+    @staticmethod
+    def _is_auth_file_exist() -> bool:
         """Метод, который проверяет на наличия файла.
 
         Если файл существует, то возвращает True иначе Else.
@@ -54,10 +56,11 @@ class Authenticator:
 
         if not login:
             self.errors_count += 1
+            self._update_auth_file()
             raise AuthorizationError("The login field cannot be empty.")
 
         if login == self.login and password == self._password:
-            self.last_success_login_at = datetime.utcnow().isoformat()
+            self.last_success_login_at = datetime.utcnow()
             self._update_auth_file()
         else:
             self.errors_count += 1
@@ -75,7 +78,7 @@ class Authenticator:
         with open("auth.txt", "w") as f:
             f.write(f"{self.login}\n")
             f.write(f"{self._password}\n")
-            f.write(f"{self.last_success_login_at}\n")
+            f.write(f"{self.last_success_login_at.isoformat()}\n")
             f.write(f"{self.errors_count}")
 
 
@@ -88,6 +91,7 @@ class Authenticator:
         """
         if self.login:
             self.errors_count += 1
+            self._update_auth_file()
             raise RegistrationError("You are already a registered user.")
 
         if not login:
@@ -96,7 +100,5 @@ class Authenticator:
 
         self.login = login
         self._password = password
-        self.last_success_login_at = datetime.utcnow().isoformat()
+        self.last_success_login_at = datetime.utcnow()
         self._update_auth_file()
-
-

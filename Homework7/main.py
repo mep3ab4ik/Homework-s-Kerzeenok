@@ -1,7 +1,6 @@
 __author__ = "Керзеёнок Никита"
 
 from random import randint
-from datetime import datetime
 from authenticator import Authenticator
 from exceptions import AuthorizationError, RegistrationError
 
@@ -65,7 +64,7 @@ def main() -> None:
 
     while True:
         username = input("Enter username: ")
-        password = input("Enter password:")
+        password = input("Enter password: ")
 
         if account.login:
 
