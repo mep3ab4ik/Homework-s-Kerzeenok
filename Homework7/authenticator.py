@@ -60,7 +60,6 @@ class Authenticator:
             raise AuthorizationError("The login field cannot be empty.")
 
         if login == self.login and password == self._password:
-            self.last_success_login_at = datetime.utcnow()
             self._update_auth_file()
         else:
             self.errors_count += 1
@@ -78,6 +77,7 @@ class Authenticator:
         with open("auth.txt", "w") as f:
             f.write(f"{self.login}\n")
             f.write(f"{self._password}\n")
+            self.last_success_login_at = datetime.utcnow()
             f.write(f"{self.last_success_login_at.isoformat()}\n")
             f.write(f"{self.errors_count}")
 
@@ -100,5 +100,4 @@ class Authenticator:
 
         self.login = login
         self._password = password
-        self.last_success_login_at = datetime.utcnow()
         self._update_auth_file()
