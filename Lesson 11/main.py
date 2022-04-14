@@ -2,6 +2,7 @@ __author__ = "Керзеёнок Никита"
 
 from random import randint
 from authenticator import Authenticator
+from validate import Validator
 from exceptions import AuthorizationError, RegistrationError
 
 
@@ -54,7 +55,7 @@ def guess_number_game() -> None:
 
 
 account = Authenticator()
-
+validate = Validator()
 
 
 @infinity
@@ -69,22 +70,22 @@ def main() -> bool:
 
     # Проверка на подсказку регистрации\авторизации
 
-    if account.login:
-        print("To log in, enter your username and password. \n")
+    if account.email:
+        print("To log in, enter your email and password. \n")
     else:
-        print("To register in, enter your username and password.\n")
+        print("To register in, enter your email and password.\n")
 
-    # Записываем логин и пароль в переменные
+    # Записываем email и пароль в переменные
 
-    username = input("Enter username: ")
+    email = input("Enter email: ")
     password = input("Enter password: ")
 
     # Проверка на выполнение блока регистрации или авторизации
 
-    if account.login:
+    if account.email:
 
         try:
-            account.authorize(username, password)
+            account.authorize(email, password)
         except AuthorizationError as e:
             print(f"Error. {e}")
             return False
@@ -92,7 +93,9 @@ def main() -> bool:
     else:
 
         try:
-            account.registrate(username, password)
+            account.registrate(email, password)
+            # validate.validate_email(email)
+            # validate.validate_password(password)
         except RegistrationError as e:
             print(f"Error. {e}")
             return False
@@ -102,7 +105,7 @@ def main() -> bool:
 
     success_login_time = account.last_success_login_at.strftime('%d.%m.%Y %H:%M:%S')
 
-    print(f"Hello {account.login}! "
+    print(f"Hello {account.email}! "
           f"Time of the last successful authorization: {success_login_time}. "
           f"Quantity of authorization attempts: {account.errors_count}")
 

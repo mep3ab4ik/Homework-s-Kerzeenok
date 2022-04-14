@@ -9,14 +9,15 @@ from exceptions import AuthorizationError, RegistrationError
 class Authenticator:
     """Класс аутентификации пользователя."""
 
+
     def __init__(self):
 
-        self.login: str | None = None
+        self.email: str | None = None
         self._password: str | None = None
         self.last_success_login_at: datetime | None = None
         self.errors_count: int = 0
         self.user = {
-            "login": f"{self.login}",
+            "email": f"{self.email}",
             "password": f"{self._password}",
             "time": f"{self.last_success_login_at}",
             "errors_count": f"{self.errors_count}"}
@@ -51,7 +52,7 @@ class Authenticator:
 
             # Записываем в локальные переменные
 
-            self.login = self.user["login"]
+            self.email = self.user["email"]
             self._password = self.user["password"]
 
             # Конвертируем полученное значение к datetime и записываем
@@ -61,27 +62,27 @@ class Authenticator:
 
 
 
-    def authorize(self, login, password):
+    def authorize(self, email, password):
         """Метод авторизации пользователя
 
-        Проверяет на наличие переменной 'login'.
+        Проверяет на наличие переменной 'email'.
         Сравнивает введенные логин и пароль, с логином и паролем из файла.
         """
 
-        if not self.login:
+        if not self.email:
             self.errors_count += 1
             raise AuthorizationError("You haven't registered.")
 
-        if not login:
+        if not email:
             self.errors_count += 1
-            raise AuthorizationError("The login field cannot be empty.")
+            raise AuthorizationError("The email field cannot be empty.")
 
-        if login == self.login and password == self._password:
+        if email == self.email and password == self._password:
             self._update_auth_file()
             self.last_success_login_at = datetime.utcnow()
         else:
             self.errors_count += 1
-            raise AuthorizationError("The username or password is incorrect")
+            raise AuthorizationError("The email or password is incorrect")
 
     def _update_auth_file(self):
         """Метод обновление данных в файле.
@@ -92,35 +93,32 @@ class Authenticator:
         # Записываем в файл с помочью json
 
         with open("auth.json", "w") as f:
+            # self.user["errors_count"] = str(self.errors_count)
             # Записываем время по ключу в форме строки
             json.dump(self.user, f)
 
-    def registrate(self, login, password):
+    def registrate(self, email, password):
         """Метод регистрации пользователя.
 
         Если файл существует, то выводит ошибку.
         Если нет, то создаем файл и записываем туда данные.
-
         """
-        if self.user["login"] is None:
+
+        if self.email:
             self.errors_count += 1
             raise RegistrationError("You are already a registered user.")
 
-        if not login:
+        if not email:
             self.errors_count += 1
-            raise RegistrationError("The login field cannot be empty.")
+            raise RegistrationError("The email field cannot be empty.")
 
-        self.user.update({"login": f"{login}",
+        if not password:
+            self.errors_count += 1
+            raise RegistrationError("The password filed cannot be empty.")
+
+        self.user.update({"email": f"{email}",
                           "password": f"{password}",
-                          "time": f"{datetime.utcnow()}"})
+                          "time": f"{datetime.utcnow()}",
+                          "errors_count": f"{self.errors_count}"})
         self._update_auth_file()
-
-
-class Validator:
-    """Класс валидации почты и пароля"""
-
-    def __init__(self):
-        pass
-
-    def validate_password(self):
-        pass
+        
