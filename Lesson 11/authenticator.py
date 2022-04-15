@@ -2,6 +2,8 @@
 
 import os.path
 import json
+import hashlib
+import ast
 from datetime import datetime
 from exceptions import AuthorizationError, RegistrationError
 
@@ -9,18 +11,21 @@ from exceptions import AuthorizationError, RegistrationError
 class Authenticator:
     """Класс аутентификации пользователя."""
 
-
     def __init__(self):
 
         self.email: str | None = None
-        self._password: str | None = None
+        self._password: dict | None = None
         self.last_success_login_at: datetime | None = None
         self.errors_count: int = 0
+        self.salt: bytes = b""
+        self.key: bytes = b""
         self.user = {
             "email": f"{self.email}",
-            "password": f"{self._password}",
+            "password": self._password,
             "time": f"{self.last_success_login_at}",
-            "errors_count": f"{self.errors_count}"}
+            "errors_count": f"{self.errors_count}"
+        }
+
 
         # Проверка на наличия файла 'auth.txt'
 
@@ -43,23 +48,23 @@ class Authenticator:
         """
 
         # Записываем данные в переменные
-
         with open("auth.json", "r") as f:
-
             # Считываем данные из файла в dict
 
-            self.user = json.load(f)
+            self.user = json.loads(f.read())
 
-            # Записываем в локальные переменные
+            # Из dict расскидываем по переменным
 
             self.email = self.user["email"]
             self._password = self.user["password"]
-
             # Конвертируем полученное значение к datetime и записываем
-
             self.last_success_login_at = datetime.fromisoformat(self.user.get("time"))
             self.errors_count = int(self.user["errors_count"])
 
+
+        # self._password = ast.literal_eval(self._password)
+        self.salt = ast.literal_eval(self._password.get("salt")) # json.load
+        self.key = ast.literal_eval(self._password.get("key"))
 
 
     def authorize(self, email, password):
@@ -77,7 +82,13 @@ class Authenticator:
             self.errors_count += 1
             raise AuthorizationError("The email field cannot be empty.")
 
-        if email == self.email and password == self._password:
+        new_key = hashlib.pbkdf2_hmac(
+            "sha512",
+            password.encode("utf-8"),
+            self.salt,
+            100000
+        )
+        if email == self.email and new_key == self.key:
             self._update_auth_file()
             self.last_success_login_at = datetime.utcnow()
         else:
@@ -93,9 +104,7 @@ class Authenticator:
         # Записываем в файл с помочью json
 
         with open("auth.json", "w") as f:
-            # self.user["errors_count"] = str(self.errors_count)
-            # Записываем время по ключу в форме строки
-            json.dump(self.user, f)
+            f.write(json.dumps(self.user, indent=0))
 
     def registrate(self, email, password):
         """Метод регистрации пользователя.
@@ -108,17 +117,25 @@ class Authenticator:
             self.errors_count += 1
             raise RegistrationError("You are already a registered user.")
 
-        if not email:
+        if not email or not password:
             self.errors_count += 1
-            raise RegistrationError("The email field cannot be empty.")
+            raise RegistrationError("The email or password field cannot be empty.")
 
-        if not password:
-            self.errors_count += 1
-            raise RegistrationError("The password filed cannot be empty.")
+        # Получаем
 
+        self.salt = os.urandom(32)
+
+        # Есть еще dklen = 128 (Ключ длинной 128 байта)
+        key = hashlib.pbkdf2_hmac(
+            "sha512",  # Используемый алгоритм хеширования
+            password.encode("utf-8"),  # конвертируем пароль в байты
+            self.salt,  # Предоставляем соль
+            100000)  # Количество итераций (минимум 100.000 итераций)
+
+        hash_password = {"salt": f"{self.salt}", "key": f"{key}"}
         self.user.update({"email": f"{email}",
-                          "password": f"{password}",
+                          "password": hash_password,
                           "time": f"{datetime.utcnow()}",
                           "errors_count": f"{self.errors_count}"})
+
         self._update_auth_file()
-        

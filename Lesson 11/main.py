@@ -94,8 +94,8 @@ def main() -> bool:
 
         try:
             account.registrate(email, password)
-            # validate.validate_email(email)
-            # validate.validate_password(password)
+            validate.validate_email(email)
+            validate.validate_password(password)
         except RegistrationError as e:
             print(f"Error. {e}")
             return False
@@ -109,7 +109,7 @@ def main() -> bool:
           f"Time of the last successful authorization: {success_login_time}. "
           f"Quantity of authorization attempts: {account.errors_count}")
 
-    # guess_number_game()
+    guess_number_game()
     return True
 
 
