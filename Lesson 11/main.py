@@ -55,7 +55,6 @@ def guess_number_game() -> None:
 
 
 account = Authenticator()
-validate = Validator()
 
 
 @infinity
@@ -93,9 +92,7 @@ def main() -> bool:
     else:
 
         try:
-            account.registrate(email, password)
-            validate.validate_email(email)
-            validate.validate_password(password)
+            account.registrate(Validator(email, password))
         except RegistrationError as e:
             print(f"Error. {e}")
             return False

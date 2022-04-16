@@ -6,13 +6,13 @@ import hashlib
 import ast
 from datetime import datetime
 from exceptions import AuthorizationError, RegistrationError
+from validate import Validator
 
 
 class Authenticator:
     """Класс аутентификации пользователя."""
 
     def __init__(self):
-
         self.email: str | None = None
         self._password: dict | None = None
         self.last_success_login_at: datetime | None = None
@@ -25,7 +25,6 @@ class Authenticator:
             "time": f"{self.last_success_login_at}",
             "errors_count": f"{self.errors_count}"
         }
-
 
         # Проверка на наличия файла 'auth.txt'
 
@@ -48,22 +47,33 @@ class Authenticator:
         """
 
         # Записываем данные в переменные
+
         with open("auth.json", "r") as f:
+
             # Считываем данные из файла в dict
 
             self.user = json.loads(f.read())
 
-            # Из dict расскидываем по переменным
+            # Из dict раскидываем по переменным
 
             self.email = self.user["email"]
             self._password = self.user["password"]
+
             # Конвертируем полученное значение к datetime и записываем
+
             self.last_success_login_at = datetime.fromisoformat(self.user.get("time"))
             self.errors_count = int(self.user["errors_count"])
 
+        """Функция 'ast.literal_eval' определяет, является ли данные для вычисления,
+        допустимым типом после вычисления. Если это так, то выполняет операцию.
+        В нашем случае байты допустимое значение"""
 
-        # self._password = ast.literal_eval(self._password)
-        self.salt = ast.literal_eval(self._password.get("salt")) # json.load
+        # Вычисляем данные и записываем значение ключа salt в переменную self.salt
+
+        self.salt = ast.literal_eval(self._password.get("salt"))
+
+        # Вычисляем данные и записываем значение ключа key в переменную self.key
+
         self.key = ast.literal_eval(self._password.get("key"))
 
 
@@ -82,12 +92,15 @@ class Authenticator:
             self.errors_count += 1
             raise AuthorizationError("The email field cannot be empty.")
 
+        # Создаем новый хэш для проверки
+
         new_key = hashlib.pbkdf2_hmac(
-            "sha512",
-            password.encode("utf-8"),
-            self.salt,
-            100000
+            "sha512",  # Используемый алгоритм хеширования
+            password.encode("utf-8"),  # Конвертируем пароль в байты
+            self.salt,  # Предоставляем соль
+            100000  # Количество итераций (минимум 100.000)
         )
+
         if email == self.email and new_key == self.key:
             self._update_auth_file()
             self.last_success_login_at = datetime.utcnow()
@@ -106,7 +119,7 @@ class Authenticator:
         with open("auth.json", "w") as f:
             f.write(json.dumps(self.user, indent=0))
 
-    def registrate(self, email, password):
+    def registrate(self, data: Validator):
         """Метод регистрации пользователя.
 
         Если файл существует, то выводит ошибку.
@@ -117,22 +130,32 @@ class Authenticator:
             self.errors_count += 1
             raise RegistrationError("You are already a registered user.")
 
-        if not email or not password:
-            self.errors_count += 1
-            raise RegistrationError("The email or password field cannot be empty.")
+        # if not email or not password:
+        #     self.errors_count += 1
+        #     raise RegistrationError("The email or password field cannot be empty.")
 
-        # Получаем
+        email = data.email
+        password = data.password
+        self.errors_count += data.errors_count
+
+        # Генерируем соль
 
         self.salt = os.urandom(32)
 
-        # Есть еще dklen = 128 (Ключ длинной 128 байта)
+        # Создаем хэш пароля
+
         key = hashlib.pbkdf2_hmac(
             "sha512",  # Используемый алгоритм хеширования
             password.encode("utf-8"),  # конвертируем пароль в байты
             self.salt,  # Предоставляем соль
             100000)  # Количество итераций (минимум 100.000 итераций)
 
+        # Создаем dict, где храним значение salt и key в одноименных ключах
+
         hash_password = {"salt": f"{self.salt}", "key": f"{key}"}
+
+        # Обновляем dict user
+
         self.user.update({"email": f"{email}",
                           "password": hash_password,
                           "time": f"{datetime.utcnow()}",
