@@ -62,7 +62,7 @@ class Authenticator:
             # Конвертируем полученное значение к datetime и записываем
 
             self.last_success_login_at = datetime.fromisoformat(self.user.get("time"))
-            self.errors_count = int(self.user["errors_count"])
+            self.errors_count = self.user["errors_count"]
 
         """Функция 'ast.literal_eval' определяет, является ли данные для вычисления,
         допустимым типом после вычисления. Если это так, то выполняет операцию.
