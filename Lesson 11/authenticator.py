@@ -130,9 +130,6 @@ class Authenticator:
             self.errors_count += 1
             raise RegistrationError("You are already a registered user.")
 
-        # if not email or not password:
-        #     self.errors_count += 1
-        #     raise RegistrationError("The email or password field cannot be empty.")
 
         email = data.email
         password = data.password
@@ -141,6 +138,12 @@ class Authenticator:
         # Генерируем соль
 
         self.salt = os.urandom(32)
+
+        """Используем библиотеку hashlib для хэширование пароля.
+        Хорошая функция хэширования паролей должна быть настраиваемой, медленной и содержать соль.
+        hmac это псевдослучайная функция. Атрибут hash_name - это желаемый алгоритм хэширования для hmac.
+        В нашем случаем мы используем SHA512. Так как при переборе хэша, скорость составит ~220 M/s,
+        для SHA256 составит ~2050 M/s. (M- мегахэши)."""
 
         # Создаем хэш пароля
 
@@ -156,9 +159,9 @@ class Authenticator:
 
         # Обновляем dict user
 
-        self.user.update({"email": f"{email}",
+        self.user.update({"email": email,
                           "password": hash_password,
-                          "time": f"{datetime.utcnow()}",
-                          "errors_count": f"{self.errors_count}"})
+                          "time": datetime.utcnow().isoformat(),
+                          "errors_count": self.errors_count})
 
         self._update_auth_file()
